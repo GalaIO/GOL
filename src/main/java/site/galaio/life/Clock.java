@@ -1,5 +1,11 @@
 package site.galaio.life;
 
+import site.galaio.tools.Publisher;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -23,8 +29,48 @@ public class Clock {
         createMenus();
     }
 
+    /**
+     * first set up a single listener that will handle all the
+     * menu-selection events except "Exit"
+     */
     private void createMenus() {
+        ActionListener modifier = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String name = ((JMenuItem) e.getSource()).getName();
+                char toDo = name.charAt(0);
 
+                if (toDo == 'T') {
+                    // single tock
+                    tick();
+                    return;
+                }
+
+                int tickMillseconds = 0;
+                switch (toDo) {
+                    case 'A':
+                        tickMillseconds = 500;
+                        break;
+                    case 'S':
+                        tickMillseconds = 150;
+                        break;
+                    case 'M':
+                        tickMillseconds = 70;
+                        break;
+                    case 'F':
+                        tickMillseconds = 30;
+                        break;
+                }
+                startTicking(tickMillseconds);
+
+            }
+        };
+        MenuSite.addLine(this, "Go", "Halt", modifier);
+        MenuSite.addLine(this, "Go", "Tick(Single Step)", modifier);
+        MenuSite.addLine(this, "Go", "Agonizing", modifier);
+        MenuSite.addLine(this, "Go", "Slow", modifier);
+        MenuSite.addLine(this, "Go", "Medium", modifier);
+        MenuSite.addLine(this, "Go", "Fast", modifier);
 
     }
 
@@ -65,11 +111,13 @@ public class Clock {
      *
      */
     public void tick() {
+        // command pattern
         publisher.publish(new Publisher.Distributor() {
-            public void deliverto(Object subscriber) {
+            public void deliverTo(Object subscriber) {
                 ((Listener)subscriber).tick();
             }
         });
+        Collection
     }
 
     /**
