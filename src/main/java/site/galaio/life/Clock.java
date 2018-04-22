@@ -25,7 +25,7 @@ public class Clock {
      * a private constructor.
      * for init some menus, we should instance Clock later.
      */
-    private Clock() throws Exception {
+    private Clock(){
         createMenus();
     }
 
@@ -33,7 +33,7 @@ public class Clock {
      * first set up a single listener that will handle all the
      * menu-selection events except "Exit"
      */
-    private void createMenus() throws Exception {
+    private void createMenus(){
         ActionListener modifier = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -65,13 +65,16 @@ public class Clock {
 
             }
         };
-        MenuSite.addLine("Go", "Halt", modifier);
-        MenuSite.addLine("Go", "Tick(Single Step)", modifier);
-        MenuSite.addLine("Go", "Agonizing", modifier);
-        MenuSite.addLine("Go", "Slow", modifier);
-        MenuSite.addLine("Go", "Medium", modifier);
-        MenuSite.addLine("Go", "Fast", modifier);
-
+        try {
+            MenuSite.addLine("Go", "Halt", modifier);
+            MenuSite.addLine("Go", "Tick(Single Step)", modifier);
+            MenuSite.addLine("Go", "Agonizing", modifier);
+            MenuSite.addLine("Go", "Slow", modifier);
+            MenuSite.addLine("Go", "Medium", modifier);
+            MenuSite.addLine("Go", "Fast", modifier);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "cannot build speed menu!");
+        }
     }
 
     /**
@@ -123,7 +126,7 @@ public class Clock {
      * DCL to get instance of Clock.
      * @return
      */
-    public static Clock instance() throws Exception {
+    public static Clock instance(){
         if (instance == null) {
             synchronized (Clock.class) {
                 if (instance == null) {
