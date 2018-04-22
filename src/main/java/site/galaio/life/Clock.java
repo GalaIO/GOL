@@ -1,11 +1,11 @@
 package site.galaio.life;
 
-import site.galaio.tools.Publisher;
+import site.galaio.ui.MenuSite;
+import site.galaio.util.Publisher;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -25,7 +25,7 @@ public class Clock {
      * a private constructor.
      * for init some menus, we should instance Clock later.
      */
-    private Clock() {
+    private Clock() throws Exception {
         createMenus();
     }
 
@@ -33,7 +33,7 @@ public class Clock {
      * first set up a single listener that will handle all the
      * menu-selection events except "Exit"
      */
-    private void createMenus() {
+    private void createMenus() throws Exception {
         ActionListener modifier = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -65,12 +65,12 @@ public class Clock {
 
             }
         };
-        MenuSite.addLine(this, "Go", "Halt", modifier);
-        MenuSite.addLine(this, "Go", "Tick(Single Step)", modifier);
-        MenuSite.addLine(this, "Go", "Agonizing", modifier);
-        MenuSite.addLine(this, "Go", "Slow", modifier);
-        MenuSite.addLine(this, "Go", "Medium", modifier);
-        MenuSite.addLine(this, "Go", "Fast", modifier);
+        MenuSite.addLine("Go", "Halt", modifier);
+        MenuSite.addLine("Go", "Tick(Single Step)", modifier);
+        MenuSite.addLine("Go", "Agonizing", modifier);
+        MenuSite.addLine("Go", "Slow", modifier);
+        MenuSite.addLine("Go", "Medium", modifier);
+        MenuSite.addLine("Go", "Fast", modifier);
 
     }
 
@@ -117,14 +117,13 @@ public class Clock {
                 ((Listener)subscriber).tick();
             }
         });
-        Collection
     }
 
     /**
      * DCL to get instance of Clock.
      * @return
      */
-    public static Clock instance() {
+    public static Clock instance() throws Exception {
         if (instance == null) {
             synchronized (Clock.class) {
                 if (instance == null) {

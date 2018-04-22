@@ -1,4 +1,4 @@
-package site.galaio.tools;
+package site.galaio.util;
 
 import java.util.NoSuchElementException;
 
