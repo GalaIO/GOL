@@ -108,11 +108,16 @@ public class Universe extends JPanel {
         return instance;
     }
 
-    private void doLoad() throws Exception {
-        FileInputStream in = new FileInputStream(Files.userSelected(".", ".life", "Life File", "Load"));
-        Clock.instance().stop();
-        outerMostCell.clear();
-        in.close();
+    private void doLoad() {
+        FileInputStream in = null;
+        try {
+            in = new FileInputStream(Files.userSelected(".", ".life", "Life File", "Load"));
+            Clock.instance().stop();
+            outerMostCell.clear();
+            in.close();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 
     private void doStore() {

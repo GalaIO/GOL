@@ -1,5 +1,7 @@
 package site.galaio.life;
 
+import site.galaio.util.Direction;
+
 import java.awt.*;
 
 /**
