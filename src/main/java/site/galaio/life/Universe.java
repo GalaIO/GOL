@@ -124,6 +124,10 @@ public class Universe extends JPanel {
 
     }
 
+    private void doExit() {
+
+    }
+
     public void paint(Graphics g) {
         Rectangle panelBounds = getBounds();
         Rectangle clipBounds = g.getClipBounds();

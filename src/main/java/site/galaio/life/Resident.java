@@ -1,7 +1,6 @@
 package site.galaio.life;
 
 import site.galaio.util.AssertUtil;
-import site.galaio.util.Direction;
 import site.galaio.util.exception.UserAssertException;
 
 import java.awt.*;
