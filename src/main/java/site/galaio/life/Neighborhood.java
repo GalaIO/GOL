@@ -129,9 +129,22 @@ public class Neighborhood implements Cell {
         return grid[row][colum];
     }
 
+    /**
+     * transition the cell to the previously-computed state.
+     * @return true if the transition actually changed anything.
+     */
     @Override
     public boolean transition() {
-        return false;
+        boolean someHasChanged = false;
+
+        for (int row = 0; row < gridSize; row++) {
+            for (int column = 0; column < gridSize; column++) {
+                if (grid[row][column].transition()) {
+                    someHasChanged = true;
+                }
+            }
+        }
+        return someHasChanged;
     }
 
     /**
@@ -169,13 +182,23 @@ public class Neighborhood implements Cell {
     }
 
     /**
-     *
+     * a mouse click event, neighborhood's task is spread it to the lower level.
      * @param here
      * @param surface
      */
     @Override
     public void userClicked(Point here, Rectangle surface) {
+        int pixelsInHeight = surface.height / gridSize;
+        int pixelsInWidth = surface.width / gridSize;
+        int row = here.y / pixelsInHeight;
+        int colomn = here.x / pixelsInWidth;
 
+        Rectangle subCellRect = new Rectangle(0, 0, pixelsInWidth, pixelsInHeight);
+        Point position = new Point(here.x % pixelsInWidth, here.y % pixelsInHeight);
+
+        grid[row][colomn].userClicked(position, subCellRect);
+
+        amActive = true;
     }
 
     @Override
