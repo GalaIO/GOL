@@ -1,12 +1,12 @@
 package site.galaio.life;
 
 import site.galaio.ui.MenuSite;
+import site.galaio.util.FileUtil;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.FileInputStream;
-import java.nio.file.Files;
 
 /**
  * Created by tianyi on 2018/4/22.
@@ -26,7 +26,8 @@ public class Universe extends JPanel {
 
     private Universe() {
         outerMostCell = new Neighborhood(DEFAULT_GRID_SIZE, new Neighborhood(DEFAULT_CELL_SIZE, new Resident()));
-        final Dimension PREFERRED_SIZE = new Dimension(outerMostCell.widthInCells() * DEFAULT_CELL_SIZE, outerMostCell.widthInCells() * DEFAULT_CELL_SIZE);
+        final Dimension PREFERRED_SIZE = new Dimension(outerMostCell.widthInCells() * DEFAULT_CELL_SIZE,
+                outerMostCell.widthInCells() * DEFAULT_CELL_SIZE);
 
         addComponentListener(new ComponentAdapter() {
             @Override
@@ -86,6 +87,7 @@ public class Universe extends JPanel {
             });
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "init failed!", "the game of life", JOptionPane.ERROR_MESSAGE);
+            doExit();
         }
 
         Clock.instance().addClockListener(new Clock.Listener() {
@@ -111,7 +113,7 @@ public class Universe extends JPanel {
     private void doLoad() {
         FileInputStream in = null;
         try {
-            in = new FileInputStream(Files.userSelected(".", ".life", "Life File", "Load"));
+            in = new FileInputStream(FileUtil.userSelected("Life File", "json"));
             Clock.instance().stop();
             outerMostCell.clear();
             in.close();
@@ -131,6 +133,35 @@ public class Universe extends JPanel {
     public void paint(Graphics g) {
         Rectangle panelBounds = getBounds();
         Rectangle clipBounds = g.getClipBounds();
+        // the panel bounds is relative to the upper-left
+        // corner od the screen, pretend that it's at (0, 0)
+        panelBounds.x = 0;
+        panelBounds.y = 0;
+        outerMostCell.redraw(g, panelBounds, true);
+    }
+
+    /**
+     * Force a screen refresh by queuing a request on the
+     * swing event queue.
+     */
+    private void refreshNow() {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                Graphics g = getGraphics();
+                if (g == null) {
+                    return;
+                }
+                try{
+                    Rectangle panelBounds = getBounds();
+                    panelBounds.x = 0;
+                    panelBounds.y = 0;
+                    outerMostCell.redraw(g, panelBounds, false);
+                }finally {
+                    g.dispose();
+                }
+            }
+        });
     }
 
 }
