@@ -131,6 +131,7 @@ public class Universe extends JPanel {
     }
 
     public void paint(Graphics g) {
+        System.out.println("swing trigger the paint() method!");
         Rectangle panelBounds = getBounds();
         Rectangle clipBounds = g.getClipBounds();
         // the panel bounds is relative to the upper-left

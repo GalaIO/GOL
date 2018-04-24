@@ -81,12 +81,12 @@ public class Neighborhood implements Cell {
                 } else {
 
                     subCellNorthWest = (column == 0) ?
-                            northwest.edge(row-1, gridSize - 1) :
-                            north.edge(row - 1, column - 1);
+                            west.edge(row-1, gridSize - 1) :
+                            grid[row - 1][column - 1];
                     subCellNorth = grid[row-1][column];
                     subCellNorthEast = (column == gridSize - 1) ?
-                            northeast.edge(row - 1, 0) :
-                            north.edge(row - 1, column + 1);
+                            east.edge(row - 1, 0) :
+                            grid[row - 1][column + 1];
                 }
                 subCellWest = (column == 0) ? west.edge(row, gridSize - 1) : grid[row][column - 1];
                 subCellEast = (column == gridSize - 1) ? east.edge(row, 0) : grid[row][column + 1];
@@ -95,7 +95,7 @@ public class Neighborhood implements Cell {
                             southwest.edge(0, gridSize - 1) :
                             south.edge(0, column - 1);
                     subCellSouth = south.edge(0, column);
-                    subCellSouthEast = (column == gridSize - 1) ? subCellSouthWest.edge(0, 0) : south.edge(0, column + 1);
+                    subCellSouthEast = (column == gridSize - 1) ? southeast.edge(0, 0) : south.edge(0, column + 1);
                 } else {
                     subCellSouthWest = (column == 0) ?
                             west.edge(row + 1, gridSize - 1) :
@@ -130,6 +130,10 @@ public class Neighborhood implements Cell {
     }
 
     /**
+     * a
+     */
+    private static int nestingLevel = -1;
+    /**
      * transition the cell to the previously-computed state.
      * @return true if the transition actually changed anything.
      */
@@ -137,12 +141,18 @@ public class Neighborhood implements Cell {
     public boolean transition() {
         boolean someHasChanged = false;
 
+        if (++nestingLevel == 0) {
+            readingPermitted.set(false);
+        }
         for (int row = 0; row < gridSize; row++) {
             for (int column = 0; column < gridSize; column++) {
                 if (grid[row][column].transition()) {
                     someHasChanged = true;
                 }
             }
+        }
+        if (nestingLevel-- == 0) {
+            readingPermitted.set(true);
         }
         return someHasChanged;
     }
@@ -157,6 +167,17 @@ public class Neighborhood implements Cell {
     @Override
     public void redraw(Graphics g, Rectangle here, boolean drawAll) {
         if (!amActive && !oneLastRefreshRequired && !drawAll) {
+            return;
+        }
+
+        // if not permitted, just return.
+        if (!readingPermitted.isTrue()) {
+            return;
+        }
+        try {
+            readingPermitted.waitForTrue();
+        } catch (InterruptedException ex) {
+            //just ignore
             return;
         }
 
