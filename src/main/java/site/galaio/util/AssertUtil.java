@@ -21,9 +21,9 @@ public class AssertUtil {
         }
     }
 
-    public static void assertTrue(boolean statement, Exception ex) throws Exception {
+    public static void assertTrue(boolean statement, Exception ex){
         if (!statement) {
-            throw ex;
+            throw new RuntimeException(ex);
         }
     }
 }
